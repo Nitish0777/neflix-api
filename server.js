@@ -1,22 +1,24 @@
-// Imports environment variables from the env.js file.
-//This is a common practice for handling sensitive information like API keys or database connection strings.
-import "./env.js";
 import express from "express";
 import cors from "cors";
-import {connectUsingMongoose} from "./confiq/mongoose.js";
+import { connectUsingMongoose } from "./confiq/mongoose.js";
 import userRouter from "./routes/UserRoutes.js";
+import dotenv from "dotenv";
 
 const app = express();
 
-app.use(cors());
-app.use(express.json()); //This allows the application to handle JSON data in request bodies.
+dotenv.config();
 
-app.use("/", (req, res) => {
-  res.send("HI.. Welcome");
+app.use(cors());
+app.use(express.json());
+
+connectUsingMongoose();
+
+app.get("/", (req, res) => {
+  res.send("Hello World");
 });
 app.use("/api/user", userRouter);
 
-app.listen(process.env.PORT, () => {
-  connectUsingMongoose();
-  console.log("server started");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
